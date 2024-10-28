@@ -70,7 +70,7 @@
             gap: 20px;
         }
         .hint-card {
-            width: 80px;
+            width: 120px;
             height: 120px;
             perspective: 1000px;
         }
@@ -113,23 +113,45 @@
             margin-top: 10px;
         }
         input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            margin-top: 20px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
+    width: 80%;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    background-size: contain;
+    border: none; /* デフォルトの枠線を消す */
+    border-radius: 8px;
+    background-image: url('kaitou.png');
+    background-size: contain; /* 画像を全体にフィット */
+    background-repeat: no-repeat;
+    background-position: center; /* 背景画像を中央に配置 */
+    width: 80%; /* フィールドの幅を調整 */
+    height: 55px;
+    color: black; /* 入力したテキストの色 */
+    padding-left: 15px; /* テキストの位置調整 */
+    background-color: transparent; /* ボタン背景を透過 */
+    box-sizing: border-box;
+}
+input[type="text"]:focus {
+    background-image: url('kaitou.png'); /* フォーカス時も背景画像を保持 */
+    background-size: contain; /* 画像全体が表示されるように調整 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent; /* フォーカス時も背景を透明に */
+}
         button {
-            background-image: url();
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
+    background-image: url('sousin.png');
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: transparent; /* ボタン背景を透過 */
+    width: 110px; /* ボタンの幅を調整 */
+    height: 110px; /* ボタンの高さを調整 */
+    border: none; 
+    border-radius: 8px;
+    padding: 0;
+    font-size: 0; 
+    cursor: pointer;
+    margin-top: 20px;
+}
         .result-container {
             position: fixed;
             top: 50%;
@@ -190,7 +212,7 @@
                 font-size: 14px;
             }
             .hint-text {
-                gap: 90px;
+                gap: 80px;
             }
             input[type="text"] {
     width: 80%;
@@ -240,7 +262,7 @@ input[type="text"]:focus {
 </head>
 <body>
     <div class="container">
-        <img src="kado.png" alt="アイコン" class="kado kado-top-right">
+        <img src="kado.png" alt="花の模様" class="kado kado-top-right">
         <img src="title.png" alt="第一関門" class="title">
         <br>
         <div class="text-box">    
@@ -259,46 +281,49 @@ input[type="text"]:focus {
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const form = document.getElementById("quiz-form");
-                const input = document.getElementById("answer");
-                const resultContainer = document.getElementById("result-container");
-                const resultImage = document.getElementById("result-image");
-                const overlay = document.getElementById("overlay");
+    const form = document.getElementById("quiz-form");
+    const input = document.getElementById("answer");
+    const resultContainer = document.getElementById("result-container");
+    const resultImage = document.getElementById("result-image");
+    const overlay = document.getElementById("overlay");
 
-                const correctAnswer = "正解";
+    // 正解を複数の形式で用意
+    const correctAnswers = ["gym"];
 
-                form.addEventListener("submit", function(event) {
-                    event.preventDefault();
-                    const userInput = input.value.trim();
-                    if (userInput === correctAnswer) {
-                        resultImage.src = "画像1.png";
-                        resultImage.alt = "clear!";
-                    } else {
-                        resultImage.src = "画像2.png";
-                        resultImage.alt = "miss!";
-                        input.value = "";
-                    }
-                    resultContainer.style.display = "block";
-                    overlay.style.display = "block";
-                });
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const userInput = input.value.trim();
 
-                overlay.addEventListener("click", function() {
-                    resultContainer.style.display = "none";
-                    overlay.style.display = "none";
-                });
-            });
+        // ユーザーの入力が正解の配列に含まれているかを確認
+        if (correctAnswers.includes(userInput)) {
+            resultImage.src = "画像1.png";
+            resultImage.alt = "clear!";
+        } else {
+            resultImage.src = "画像2.png";
+            resultImage.alt = "miss!";
+            input.value = "";
+        }
+        resultContainer.style.display = "block";
+        overlay.style.display = "block";
+    });
+
+    overlay.addEventListener("click", function() {
+        resultContainer.style.display = "none";
+        overlay.style.display = "none";
+    });
+});
         </script>
        <div class="hint-container">
         <div class="hint-card" onclick="flipCard(this)">
             <div class="hint-card-inner">
                 <div class="hint-front"></div>
-                <div class="hint-back">ヒント1</div>
+                <div class="hint-back"> 矢印の形や色に<br>注目してアルファ<br>ベットを埋めよう </div>
             </div>
         </div>
         <div class="hint-card" onclick="flipCard(this)">
             <div class="hint-card-inner">
                 <div class="hint-front" style="background-image: url('hint3.png'); background-size: cover;"></div>
-                <div class="hint-back">ヒント2</div>
+                <div class="hint-back">1つは直訳してね</div>
             </div>
         </div>
     </div>
