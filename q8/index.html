@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クイズ</title>
+    <style>
+        body {
+            background-image:url('haikei.png');
+            background-size: 350px 740px;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .kado {
+            position: absolute;
+            width: 100px;
+            height: auto;
+        }
+        .kado-top-right {
+            top: -20px;
+            right: -30px;
+        }
+        .kado-bottom-left {
+            bottom: -20px;
+            left: -30px;
+        }
+        .kado2 {
+            position: absolute;
+            width: 100px;
+            height: auto;
+        }
+        .tate {
+            width: 25px;
+            position: absolute;
+            top: 90px;
+            left: -40px;
+            height: auto;
+        }
+        .title {
+            width: 10%;
+            margin: 60px auto;
+            top: 20px;
+        }
+        .usagi, .card {
+            width: 50px;
+            height: auto;
+            display: inline-block;
+        }
+        .input-button-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .hint-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 20px;
+        }
+        .hint-card {
+            width: 120px;
+            height: 120px;
+            perspective: 1000px;
+        }
+        .hint-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .hint-card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .hint-front, .hint-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+        .hint-front {
+            background-image: url('hint.png');
+            background-size: cover;
+        }
+        .hint-back {
+            background-image:url(hint2.png) ;
+            background-size: cover;
+            color: white;
+            font-size: 16px;
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hint-text {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    background-size: contain;
+    border: none; /* デフォルトの枠線を消す */
+    border-radius: 8px;
+    background-image: url('kaitou.png');
+    background-size: contain; /* 画像を全体にフィット */
+    background-repeat: no-repeat;
+    background-position: center; /* 背景画像を中央に配置 */
+    width: 80%; /* フィールドの幅を調整 */
+    height: 55px;
+    color: black; /* 入力したテキストの色 */
+    padding-left: 15px; /* テキストの位置調整 */
+    background-color: transparent; /* ボタン背景を透過 */
+    box-sizing: border-box;
+}
+input[type="text"]:focus {
+    background-image: url('kaitou.png'); /* フォーカス時も背景画像を保持 */
+    background-size: contain; /* 画像全体が表示されるように調整 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent; /* フォーカス時も背景を透明に */
+}
+        button {
+    background-image: url('sousin.png');
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: transparent; /* ボタン背景を透過 */
+    width: 110px; /* ボタンの幅を調整 */
+    height: 110px; /* ボタンの高さを調整 */
+    border: none; 
+    border-radius: 8px;
+    padding: 0;
+    font-size: 0; 
+    cursor: pointer;
+    margin-top: 20px;
+}
+        .result-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 1000;
+        }
+        .result-container img {
+            width: 100%;
+            margin: auto;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        /* スマホ用のメディアクエリ */
+        /*gapが間の間隔。*/
+        @media (max-width: 600px) {
+            .title {
+                width: 80%;
+                margin: 50px auto;
+                position: relative;
+                top: 60px;
+            }
+            .kado {
+                width: 100px;
+            }
+            .kado-top-right {
+                top:0px;
+                right: 0px;
+            }
+            .kado-bottom-left {
+                top:600px;
+                left: 0px;
+            }
+            .tate {
+                width: 20px;
+                left: 0px;
+            }
+            .usagi, .card {
+                width: 80px;
+            }
+            .hint-container {
+                gap: 40px;
+            }
+            .hint-card {
+                width: 130px;
+                height: 130px;
+            }
+            .hint-back {
+                font-size: 14px;
+            }
+            .hint-text {
+                gap: 80px;
+            }
+            input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    background-size: contain;
+    border: none; /* デフォルトの枠線を消す */
+    border-radius: 8px;
+    background-image: url('kaitou.png');
+    background-size: contain; /* 画像を全体にフィット */
+    background-repeat: no-repeat;
+    background-position: center; /* 背景画像を中央に配置 */
+    width: 80%; /* フィールドの幅を調整 */
+    height: 55px;
+    color: black; /* 入力したテキストの色 */
+    padding-left: 15px; /* テキストの位置調整 */
+    background-color: transparent; /* ボタン背景を透過 */
+    box-sizing: border-box;
+}
+input[type="text"]:focus {
+    background-image: url('kaitou.png'); /* フォーカス時も背景画像を保持 */
+    background-size: contain; /* 画像全体が表示されるように調整 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent; /* フォーカス時も背景を透明に */
+}
+
+
+            button {
+    background-image: url('sousin.png');
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-color: transparent; /* ボタン背景を透過 */
+    width: 110px; /* ボタンの幅を調整 */
+    height: 110px; /* ボタンの高さを調整 */
+    border: none; 
+    border-radius: 8px;
+    padding: 0;
+    font-size: 0; 
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="kado.png" alt="花の模様" class="kado kado-top-right">
+        <img src="title.png" alt="第一関門" class="title">
+        <br>
+        <div class="text-box">    
+            <form id="quiz-form">
+                <input type="text" id="answer" name="answer" placeholder="答えを入力してください" autocomplete="off">
+                <div class="input-button-wrapper">
+                    <button type="submit">送信</button>
+                </div>
+            </form>
+        </div>
+        <div class="overlay" id="overlay"></div>
+    
+        <div class="result-container" id="result-container">
+            <img id="result-image" src="" alt="結果">
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("quiz-form");
+    const input = document.getElementById("answer");
+    const resultContainer = document.getElementById("result-container");
+    const resultImage = document.getElementById("result-image");
+    const overlay = document.getElementById("overlay");
+
+    // 正解を複数の形式で用意
+    const correctAnswers = ["としょしつうえ","図書室上","トショシツウエ"];
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const userInput = input.value.trim();
+
+        // ユーザーの入力が正解の配列に含まれているかを確認
+        if (correctAnswers.includes(userInput)) {
+            resultImage.src = "画像1.png";
+            resultImage.alt = "clear!";
+        } else {
+            resultImage.src = "画像2.png";
+            resultImage.alt = "miss!";
+            input.value = "";
+        }
+        resultContainer.style.display = "block";
+        overlay.style.display = "block";
+    });
+
+    overlay.addEventListener("click", function() {
+        resultContainer.style.display = "none";
+        overlay.style.display = "none";
+    });
+});
+        </script>
+       <div class="hint-container">
+        <div class="hint-card" onclick="flipCard(this)">
+            <div class="hint-card-inner">
+                <div class="hint-front"></div>
+                <div class="hint-back">絵に注目 </div>
+            </div>
+        </div>
+        <div class="hint-card" onclick="flipCard(this)">
+            <div class="hint-card-inner">
+                <div class="hint-front" style="background-image: url('hint3.png'); background-size: cover;"></div>
+                <div class="hint-back">た　ぬき<br>むし　ば</div>
+            </div>
+        </div>
+    </div>
+        <div class="hint-text">
+
+        </div>
+    </div>
+
+    <script>
+        function flipCard(element) {
+            element.querySelector('.hint-card-inner').classList.toggle('is-flipped');
+        }
+    </script>
+</body>
+</html>
